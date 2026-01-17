@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  api:
+    build: ./services/api
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=postgresql://user:pass@db:5432/viralflow
+    depends_on:
+      - redis
+      - db
+
+  worker_cpu:
+    build: ./services/worker
+    command: celery -A tasks worker --loglevel=info -Q cpu_tasks
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ./shared_storage:/data
+
+  worker_gpu:
+    build: ./services/worker_gpu
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    command: celery -A tasks worker --loglevel=info -Q gpu_tasks
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+
+  redis:
+    image: redis:7-alpine
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: viralflow
