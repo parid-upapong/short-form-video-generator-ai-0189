@@ -1,4 +1,6 @@
-# Viral-Flow Internal API (Job Management)
+# API Specification: Transcoding & Clipping Service
 
-## 1. Create Processing Job
-`POST /api/v1/jobs`
+## POST /clips/generate
+Starts the AI-driven clipping process.
+
+**Request Body:**
