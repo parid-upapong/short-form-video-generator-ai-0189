@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://viralflow.ai/sitemap.xml
+Sitemap: https://viralflow.ai/sitemap-niches.xml
+
+# Disallow admin and internal processing routes
+Disallow: /api/internal/
+Disallow: /dashboard/settings/private/
+Disallow: /auth/callback
